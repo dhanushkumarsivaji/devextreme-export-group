@@ -417,13 +417,19 @@ const onExportDataGrid = (e) => {
     customizeCell: ({ gridCell, excelCell }) => {
       if(gridCell.rowType === 'group') {
         if(gridCell.groupIndex !== undefined) {
-          excelCell.font = { bold: true };
+          excelCell.font = { bold: false };
         }
       }
     }
-  }).then(function(dataGridRange) {
+  }).then(function(dataGridRange) {   
+    
+    var groupedColumns = e.component
+    .getVisibleColumns()
+    .filter((x) => x.groupIndex !== undefined);
+
     for(let i = dataGridRange.to.row; i >= dataGridRange.from.row; i--) {
-      if(worksheet.getRow(i).outlineLevel > 0) {
+
+      if(worksheet.getRow(i).outlineLevel > groupedColumns.length - 1) {
         worksheet.spliceRows(i, 1);
         dataGridRange.to.row--;
       }
